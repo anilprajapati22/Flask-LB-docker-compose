@@ -1,0 +1,62 @@
+version: "3.3"
+
+services:
+  web1:
+    image: flask-server-postgres
+    build: ./apps
+    container_name: flask-sgn-server_0
+    ports:
+      - "5001:5000" 
+    depends_on:
+      - sgn-db
+    links:
+      - sgn-db:sgn-db  
+    volumes:
+      - /home/anilprajapati/sem8/docker-waf:/docker-waf    
+  web2:
+    image: flask-server-postgres
+    build: ./apps
+    container_name: flask-sgn-server_1
+    ports:
+      - "5002:5000" 
+    depends_on:
+      - sgn-db
+    links:
+      - sgn-db:sgn-db  
+    volumes:
+      - /home/anilprajapati/sem8/docker-waf:/docker-waf    
+
+
+  sgn-db:
+    image: postgres-sgn-env
+    build: .
+    restart: always
+    cap_add: 
+      - NET_ADMIN
+    container_name: sgn-db-postgres
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/mysql_root_password
+      POSTGRES_DB_FILE: /run/secrets/mysql_db
+    secrets:
+        - mysql_db
+        - mysql_root_password
+
+    ports:
+      - 5434:5432
+
+  ngnix:
+    build: ./nginx
+    ports:
+      - "8081:80"
+    depends_on:
+      - web1
+      - web2  
+secrets:
+  mysql_db:
+    file: ./secrets/db_name.txt
+  mysql_root_password:
+    file: ./secrets/db_root_pass.txt
+  mysql_user:
+    file: ./secrets/db_user.txt

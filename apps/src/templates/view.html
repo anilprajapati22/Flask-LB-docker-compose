@@ -1,0 +1,27 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Posts {% endblock %}</h1>
+    <form action="{{ url_for('register')}}" method="post" autocomplete="off">
+        <div class="msg">{{ msg }}</div>
+        <input type="text" name="post" placeholder="Enter Post" class="textbox" id="post" required></br></br>
+        <input type="text" name="firstname" placeholder="Enter Your Name" class="textbox" id="firstname" required></br></br>
+        <input type="submit" class="btn" value="Register">
+    </form>
+ 
+
+    {% for post in posts %}
+        <div class='book'>
+            <form action="{{ url_for('update')}}" method="post" autocomplete="off">
+                
+                <input type="text" name="id"  value="{{ post[0] }}" placeholder="Enter Post" class="textbox" id="id">
+                <p class='review'><input type="text" name="post"  value="{{ post[2] }}" placeholder="Enter Post" class="textbox" id="post"></p>
+                <i><p><input type="text" value="{{ post[1] }}" name="firstname" placeholder="Enter Your Name" class="textbox" id="firstname" required></p></i>
+                <input type="submit" class="btn" value="Register">
+            </form>
+    
+        </div>
+    {% endfor %}
+
+{% endblock %}
